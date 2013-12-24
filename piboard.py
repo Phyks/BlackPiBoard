@@ -1,8 +1,16 @@
 #!/usr/bin/env python2
 # -*- coding: utf8 -*-
 
-# Written by: QuantumPhysics
-# http://compsci.ca/v3/viewtopic.php?t=32343
+# Code modified by Phyks
+# Date: December 2013
+# License:
+# ========
+# I don't give a damn to anything you can do using this code (but please, tell
+# me if you do something cool :).
+# It would just be nice to quote where the original code comes from.
+
+# Original code written by: QuantumPhysics
+# Found here: http://compsci.ca/v3/viewtopic.php?t=32343
 # Date Written: 10/06/12
 
 import wx
