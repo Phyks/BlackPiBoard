@@ -17,7 +17,7 @@ import wx
 
 class PaintWindow(wx.Window):
     # array of colors available to draw
-    colours = ['Black', 'Yellow', 'Red', 'Green', 'Blue', 'Purple',
+    colours = ['Black', 'White', 'Yellow', 'Red', 'Green', 'Blue', 'Purple',
         'Brown', 'Aquamarine', 'Forest Green', 'Light Blue', 'Goldenrod',
         'Cyan', 'Orange', 'Navy', 'Light Grey', 'ClearScreen']
     # color quantity
@@ -33,6 +33,19 @@ class PaintWindow(wx.Window):
         self.bindEvents()
         self.initBuffer()
 
+        size = parent.GetSize()
+        self.button_exit = wx.Button(self, id=-1, label='Exit',
+                                        pos=(size[0]-125, size[1]-125),
+                                        size=(100, 50))
+        self.button_exit.Bind(wx.EVT_BUTTON, self.button_exit_handle)
+        self.button_exit.SetToolTip(wx.ToolTip("Click to exit"))
+
+        self.button_clear = wx.Button(self, id=-1, label='Clear',
+                                        pos=(size[0]-125, 25),
+                                        size=(100, 50))
+        self.button_clear.Bind(wx.EVT_BUTTON, self.button_clear_handle)
+        self.button_clear.SetToolTip(wx.ToolTip("Click to clear"))
+
     def initDrawing(self):
         self.SetBackgroundColour('WHITE')
         self.currentThickness = self.thicknesses[0]
@@ -41,6 +54,10 @@ class PaintWindow(wx.Window):
         self.previousPosition = (0, 0)
 
     def bindEvents(self):
+        pnl = wx.Panel(self)
+        pnl.Bind(wx.EVT_KEY_DOWN, self.onKeyPress)
+        pnl.SetSize((0, 0))
+        pnl.SetFocus()
         for event, handler in [
                 # creates bind event for left button down
                 (wx.EVT_LEFT_DOWN, self.onLeftDown),
@@ -50,11 +67,11 @@ class PaintWindow(wx.Window):
                 (wx.EVT_MOTION, self.onMotion),
                 # creates bind event for right button up
                 (wx.EVT_RIGHT_UP, self.onRightUp),
-                (wx.EVT_SIZE, self.onSize),       
-                (wx.EVT_IDLE, self.onIdle),       
+                (wx.EVT_SIZE, self.onSize),
+                (wx.EVT_IDLE, self.onIdle),
                 (wx.EVT_PAINT, self.onPaint),
                 # creates event to close window after 'x' is selected
-                (wx.EVT_WINDOW_DESTROY, self.cleanup)]:
+            (wx.EVT_WINDOW_DESTROY, self.cleanup)]:
             self.Bind(event, handler)
 
     def initBuffer(self):
@@ -88,7 +105,6 @@ class PaintWindow(wx.Window):
     # adds a static surpressor to conditions
     @staticmethod
     def addCheckableMenuItems(menu, items):
-       
         idToItemMapping = {}
         for item in items:
             menuId = wx.NewId()
@@ -97,19 +113,43 @@ class PaintWindow(wx.Window):
         return idToItemMapping
 
     def bindMenuEvents(self, menuHandler, updateUIHandler, ids):
-       
         sortedIds = sorted(ids)
         firstId, lastId = sortedIds[0], sortedIds[-1]
         for event, handler in \
                 [(wx.EVT_MENU_RANGE, menuHandler),
                  (wx.EVT_UPDATE_UI_RANGE, updateUIHandler)]:
             self.Bind(event, handler, id=firstId, id2=lastId)
+            
+    def button_exit_handle(self, event):
+        self.Destroy()
+
+    def button_clear_handle(self, event):
+        self.button_exit.Destroy()
+        self.button_clear.Destroy()
+        dc = wx.BufferedDC(wx.ClientDC(self), self.buffer)
+        dc.Clear()
+
+        size = self.GetSize()
+        self.button_exit = wx.Button(self, id=-1, label='Exit',
+                                        pos=(size[0]-125, size[1]-125),
+                                        size=(100, 50))
+        self.button_exit.Bind(wx.EVT_BUTTON, self.button_exit_handle)
+        self.button_exit.SetToolTip(wx.ToolTip("Click to exit"))
+
+        self.button_clear = wx.Button(self, id=-1, label='Clear',
+                                        pos=(size[0]-125, 25),
+                                        size=(100, 50))
+        self.button_clear.Bind(wx.EVT_BUTTON, self.button_clear_handle)
+        self.button_clear.SetToolTip(wx.ToolTip("Click to clear"))
 
     def onLeftDown(self, event):
         # draw line
         self.currentLine = []
         self.previousPosition = event.GetPositionTuple()
         self.CaptureMouse()
+
+        self.button_exit.Destroy()
+        self.button_clear.Destroy()
 
     def onLeftUp(self, event):
         # close motion, stop drawing, wait for event
@@ -119,12 +159,35 @@ class PaintWindow(wx.Window):
             self.currentLine = []
             self.ReleaseMouse()
 
+            size = self.GetSize()
+            self.button_exit = wx.Button(self, id=-1, label='Exit',
+                                        pos=(size[0]-125, size[1]-125),
+                                        size=(100, 50))
+            self.button_exit.Bind(wx.EVT_BUTTON, self.button_exit_handle)
+            self.button_exit.SetToolTip(wx.ToolTip("Click to exit"))
+
+            self.button_clear = wx.Button(self, id=-1, label='Clear',
+                                        pos=(size[0]-125, 25),
+                                        size=(100, 50))
+            self.button_clear.Bind(wx.EVT_BUTTON, self.button_clear_handle)
+            self.button_clear.SetToolTip(wx.ToolTip("Click to clear"))
+
+    def onKeyPress(self, event):
+        # If q key is pressed, exit
+        keycode = event.GetKeyCode()
+        if event.GetKeyCode() == wx.WXK_ESCAPE:
+            ret  = wx.MessageBox('Are you sure to quit?', 'Question', 
+                                 wx.YES_NO | wx.NO_DEFAULT, self)
+            if ret == wx.YES:
+                self.Destroy()
+        else:
+            event.Skip()
+
     def onRightUp(self, event):
         # if right button is clicked then make wx.menu to select colors
         self.PopupMenu(self.menu)
 
     def onMotion(self, event):
-
         if event.Dragging() and event.LeftIsDown():
             dc = wx.BufferedDC(wx.ClientDC(self), self.buffer)
             currentPosition = event.GetPositionTuple()
@@ -134,19 +197,16 @@ class PaintWindow(wx.Window):
             self.currentLine.append(lineSegment)
             self.previousPosition = currentPosition
 
+
     def onSize(self, event):
-       
         self.reInitBuffer = True
 
     def onIdle(self, event):
-
         if self.reInitBuffer:
             self.initBuffer()
             self.Refresh(False)
 
     def onPaint(self, event):
-       
-
         dc = wx.BufferedPaintDC(self, self.buffer)
 
     def cleanup(self, event):
@@ -191,5 +251,5 @@ class PaintFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App()
     frame = PaintFrame()
-    frame.ShowFullScreen(True, wx.FULLSCREEN_ALL)
-    app.MainLoop() 
+    frame.Show() #FullScreen(True, wx.FULLSCREEN_ALL)
+    app.MainLoop()
