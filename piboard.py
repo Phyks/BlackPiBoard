@@ -35,7 +35,7 @@ class PaintWindow(wx.Window):
 
         size = parent.GetSize()
         self.button_exit = wx.Button(self, id=-1, label='Exit',
-                                        pos=(size[0]-125, size[1]-125),
+                                        pos=(size[0]-125, size[1]-75),
                                         size=(100, 50))
         self.button_exit.Bind(wx.EVT_BUTTON, self.button_exit_handle)
         self.button_exit.SetToolTip(wx.ToolTip("Click to exit"))
@@ -131,7 +131,7 @@ class PaintWindow(wx.Window):
 
         size = self.GetSize()
         self.button_exit = wx.Button(self, id=-1, label='Exit',
-                                        pos=(size[0]-125, size[1]-125),
+                                        pos=(size[0]-125, size[1]-75),
                                         size=(100, 50))
         self.button_exit.Bind(wx.EVT_BUTTON, self.button_exit_handle)
         self.button_exit.SetToolTip(wx.ToolTip("Click to exit"))
@@ -161,7 +161,7 @@ class PaintWindow(wx.Window):
 
             size = self.GetSize()
             self.button_exit = wx.Button(self, id=-1, label='Exit',
-                                        pos=(size[0]-125, size[1]-125),
+                                        pos=(size[0]-125, size[1]-75),
                                         size=(100, 50))
             self.button_exit.Bind(wx.EVT_BUTTON, self.button_exit_handle)
             self.button_exit.SetToolTip(wx.ToolTip("Click to exit"))
@@ -251,5 +251,5 @@ class PaintFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App()
     frame = PaintFrame()
-    frame.Show() #FullScreen(True, wx.FULLSCREEN_ALL)
+    frame.ShowFullScreen(True, wx.FULLSCREEN_ALL)
     app.MainLoop()
