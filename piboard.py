@@ -122,6 +122,7 @@ class PaintWindow(wx.Window):
             
     def button_exit_handle(self, event):
         self.Destroy()
+        wx.App.ExitMainLoop(app)
 
     def button_clear_handle(self, event):
         self.button_exit.Destroy()
