@@ -14,6 +14,18 @@
 # Date Written: 10/06/12
 
 import wx
+import os
+
+def int_of_string(s):
+    try:
+        return int(s)
+    except ValueError:
+        return 0
+
+def next_filename():
+    return ("boards/"+str(max([int_of_string(i.strip(".jpg")) for i in 
+                     os.listdir('boards/') or ['0'] if not os.path.isdir(i)]
+                   ) + 1)+".jpg")
 
 class PaintWindow(wx.Window):
     # array of colors available to draw
@@ -45,6 +57,12 @@ class PaintWindow(wx.Window):
                                         size=(100, 50))
         self.button_clear.Bind(wx.EVT_BUTTON, self.button_clear_handle)
         self.button_clear.SetToolTip(wx.ToolTip("Click to clear"))
+
+        self.button_save = wx.Button(self, id=-1, label='Save',
+                                        pos=(size[0]-250, 25),
+                                        size=(100, 50))
+        self.button_save.Bind(wx.EVT_BUTTON, self.button_save_handle)
+        self.button_save.SetToolTip(wx.ToolTip("Click to save"))
 
     def initDrawing(self):
         self.SetBackgroundColour('WHITE')
@@ -127,6 +145,7 @@ class PaintWindow(wx.Window):
     def button_clear_handle(self, event):
         self.button_exit.Destroy()
         self.button_clear.Destroy()
+        self.button_save.Destroy()
         dc = wx.BufferedDC(wx.ClientDC(self), self.buffer)
         dc.Clear()
 
@@ -143,6 +162,40 @@ class PaintWindow(wx.Window):
         self.button_clear.Bind(wx.EVT_BUTTON, self.button_clear_handle)
         self.button_clear.SetToolTip(wx.ToolTip("Click to clear"))
 
+        self.button_save = wx.Button(self, id=-1, label='Save',
+                                        pos=(size[0]-250, 25),
+                                        size=(100, 50))
+        self.button_save.Bind(wx.EVT_BUTTON, self.button_save_handle)
+        self.button_save.SetToolTip(wx.ToolTip("Click to save"))
+
+    def button_save_handle(self, event):
+        self.button_exit.Destroy()
+        self.button_clear.Destroy()
+        self.button_save.Destroy()
+
+        dc = wx.BufferedDC(wx.ClientDC(self), self.buffer)
+        image = dc.GetAsBitmap()
+        image.SaveFile(next_filename(), wx.BITMAP_TYPE_JPEG)
+
+        size = self.GetSize()
+        self.button_exit = wx.Button(self, id=-1, label='Exit',
+                                        pos=(size[0]-125, size[1]-75),
+                                        size=(100, 50))
+        self.button_exit.Bind(wx.EVT_BUTTON, self.button_exit_handle)
+        self.button_exit.SetToolTip(wx.ToolTip("Click to exit"))
+
+        self.button_clear = wx.Button(self, id=-1, label='Clear',
+                                        pos=(size[0]-125, 25),
+                                        size=(100, 50))
+        self.button_clear.Bind(wx.EVT_BUTTON, self.button_clear_handle)
+        self.button_clear.SetToolTip(wx.ToolTip("Click to clear"))
+
+        self.button_save = wx.Button(self, id=-1, label='Save',
+                                        pos=(size[0]-250, 25),
+                                        size=(100, 50))
+        self.button_save.Bind(wx.EVT_BUTTON, self.button_save_handle)
+        self.button_save.SetToolTip(wx.ToolTip("Click to save"))
+
     def onLeftDown(self, event):
         # draw line
         self.currentLine = []
@@ -151,6 +204,7 @@ class PaintWindow(wx.Window):
 
         self.button_exit.Destroy()
         self.button_clear.Destroy()
+        self.button_save.Destroy()
 
     def onLeftUp(self, event):
         # close motion, stop drawing, wait for event
@@ -172,6 +226,12 @@ class PaintWindow(wx.Window):
                                         size=(100, 50))
             self.button_clear.Bind(wx.EVT_BUTTON, self.button_clear_handle)
             self.button_clear.SetToolTip(wx.ToolTip("Click to clear"))
+
+            self.button_save = wx.Button(self, id=-1, label='Save',
+                                            pos=(size[0]-250, 25),
+                                            size=(100, 50))
+            self.button_save.Bind(wx.EVT_BUTTON, self.button_save_handle)
+            self.button_save.SetToolTip(wx.ToolTip("Click to save"))
 
     def onKeyPress(self, event):
         # If q key is pressed, exit
