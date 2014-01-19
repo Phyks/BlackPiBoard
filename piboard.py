@@ -87,9 +87,7 @@ class PaintWindow(wx.Window):
                 (wx.EVT_RIGHT_UP, self.onRightUp),
                 (wx.EVT_SIZE, self.onSize),
                 (wx.EVT_IDLE, self.onIdle),
-                (wx.EVT_PAINT, self.onPaint),
-                # creates event to close window after 'x' is selected
-            (wx.EVT_WINDOW_DESTROY, self.cleanup)]:
+                (wx.EVT_PAINT, self.onPaint)]:
             self.Bind(event, handler)
 
     def initBuffer(self):
@@ -139,6 +137,7 @@ class PaintWindow(wx.Window):
             self.Bind(event, handler, id=firstId, id2=lastId)
             
     def button_exit_handle(self, event):
+        self.menu.Destroy()
         self.Destroy()
         wx.App.ExitMainLoop(app)
 
@@ -240,7 +239,9 @@ class PaintWindow(wx.Window):
             ret  = wx.MessageBox('Are you sure to quit?', 'Question', 
                                  wx.YES_NO | wx.NO_DEFAULT, self)
             if ret == wx.YES:
+                self.menu.Destroy()
                 self.Destroy()
+                wx.App.ExitMainLoop(app)
         else:
             event.Skip()
 
@@ -269,11 +270,6 @@ class PaintWindow(wx.Window):
 
     def onPaint(self, event):
         dc = wx.BufferedPaintDC(self, self.buffer)
-
-    def cleanup(self, event):
-        if hasattr(self, "menu"):
-            self.menu.Destroy()
-            del self.menu
 
     def onCheckMenuColours(self, event):
         colour = self.idToColourMap[event.GetId()]
