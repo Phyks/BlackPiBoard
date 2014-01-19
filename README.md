@@ -13,8 +13,23 @@ The base code is minimalist for now, but I will develop it in the future.
 So, basically, you just have to connect the Wacom tablet and the videoprojector
 to the Raspberry Pi and launch the script.
 
-More details coming when I'll have tested it a bit more ! Don't worry to ask
-for more information if not coming fast enough or if you are interested.
+## Detailed configuration
+
+I have an Arch Linux ARM up to date on my Raspberry Pi (important to have the
+modules for wacom tablet, only available from version 3.10.27-1 of
+`linux-raspberrypi` package). The wacom tablet should be detected automatically
+by the kernel and be usable.
+
+The picoprojector is connected to the Raspberry Pi _via_ composite AV cable.
+
+I didn't want to have a full desktop environment running on my Raspberry Pi, so
+I just installed the X server, and set up a xinitrc in my user home dir to
+automatically launch this python script at startup. I also set up an automatic
+login using (this
+page)[https://wiki.archlinux.org/index.php/automatic_login_to_virtual_console].
+
+I still have to find a correct configuration for the Wacom tablet. Especially
+to be able to use the eraser and the menu in the app.
 
 ## LICENSE
 
