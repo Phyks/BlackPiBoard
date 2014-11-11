@@ -310,4 +310,6 @@ if __name__ == '__main__':
     frame = PaintFrame()
     frame.Show()
     frame.ShowFullScreen(True, wx.FULLSCREEN_ALL)
+    cursor = wx.StockCursor(wx.CURSOR_PENCIL)
+    frame.SetCursor(cursor)
     app.MainLoop()
