@@ -23,7 +23,7 @@ def int_of_string(s):
         return 0
 
 def next_filename():
-    return ("boards/"+str(max([int_of_string(i.strip(".jpg")) for i in 
+    return ("boards/"+str(max([int_of_string(i.strip(".jpg")) for i in
                      os.listdir('boards/') or ['0'] if not os.path.isdir(i)]
                    ) + 1)+".jpg")
 
@@ -135,7 +135,7 @@ class PaintWindow(wx.Window):
                 [(wx.EVT_MENU_RANGE, menuHandler),
                  (wx.EVT_UPDATE_UI_RANGE, updateUIHandler)]:
             self.Bind(event, handler, id=firstId, id2=lastId)
-            
+
     def button_exit_handle(self, event):
         self.menu.Destroy()
         self.Destroy()
@@ -236,7 +236,7 @@ class PaintWindow(wx.Window):
         # If q key is pressed, exit
         keycode = event.GetKeyCode()
         if event.GetKeyCode() == wx.WXK_ESCAPE:
-            ret  = wx.MessageBox('Are you sure to quit?', 'Question', 
+            ret  = wx.MessageBox('Are you sure to quit?', 'Question',
                                  wx.YES_NO | wx.NO_DEFAULT, self)
             if ret == wx.YES:
                 self.menu.Destroy()
@@ -308,5 +308,6 @@ class PaintFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App()
     frame = PaintFrame()
+    frame.Show()
     frame.ShowFullScreen(True, wx.FULLSCREEN_ALL)
     app.MainLoop()
