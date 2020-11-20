@@ -11,7 +11,7 @@ blackboard.
 The base code is minimalist for now, but I will develop it in the future.
 
 So, basically, you just have to connect the Wacom tablet and the videoprojector
-to the Raspberry Pi and launch the script.
+to the Raspberry Pi and launch the script. You should install `python-wxtools` with `sudo apt-get install python-wxtools` though.
 
 ## Detailed configuration
 
